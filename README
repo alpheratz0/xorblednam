@@ -1,0 +1,10 @@
+xorblednam is a fractal generator.
+For more information about it's usage check `man xorblednam`.
+
+This program requires libpng to be installed.
+In order to build this program you need to run `make`.
+
+This program is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License
+version 2 as published by the Free Software Foundation.
+See COPYING for more details.
