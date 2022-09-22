@@ -60,7 +60,7 @@ die(const char *fmt, ...)
 static void
 usage(void)
 {
-	puts("usage: xorblednam [-hv]");
+	puts("usage: xorblednam [-bhmv]");
 	exit(0);
 }
 
@@ -102,6 +102,13 @@ complex_unsqrt_magnitude(double complex c)
 	i = cimag(c);
 
 	return r * r + i * i;
+}
+
+static void
+complex_to_coord(double complex c, int *x, int *y)
+{
+	*x = (WIDTH * ((creal(c) - FROMX))) / (TOX - FROMX);
+	*y = (HEIGHT * ((cimag(c) - FROMY))) / (TOY - FROMY);
 }
 
 static bool
@@ -169,32 +176,17 @@ save_buffer_as_png(const char *path, uint8_t *buffer, int width, int height)
 	free(row);
 }
 
-int
-main(int argc, char **argv)
+static void
+mandelbrot(void)
 {
 	int iter;
 	double x, y;
 
 #if BUFFER_SIZE >= 900000
 	uint8_t *buffer, *p;
+	buffer = calloc(BUFFER_SIZE, 1);
 #else
 	uint8_t buffer[BUFFER_SIZE] = {0}, *p;
-#endif
-
-	while (++argv, --argc > 0) {
-		if ((*argv)[0] == '-' && (*argv)[1] != '\0' && (*argv)[2] == '\0') {
-			switch ((*argv)[1]) {
-				case 'h': usage(); break;
-				case 'v': version(); break;
-				default: die("invalid option %s", *argv); break;
-			}
-		} else {
-			die("unexpected argument: %s", *argv);
-		}
-	}
-
-#if BUFFER_SIZE >= 900000
-	buffer = calloc(BUFFER_SIZE, 1);
 #endif
 
 	p = &buffer[0];
@@ -217,6 +209,80 @@ main(int argc, char **argv)
 #if BUFFER_SIZE >= 900000
 	free(buffer);
 #endif
+}
+
+static void
+buddhabrot(void)
+{
+	double x, y;
+	double complex c, z;
+	int iter, bx, by;
+
+#if BUFFER_SIZE >= 900000
+	uint8_t *buffer;
+	int *heatmap;
+
+	buffer = calloc(BUFFER_SIZE, 1);
+	heatmap = calloc(WIDTH*HEIGHT, sizeof(int));
+#else
+	uint8_t buffer[BUFFER_SIZE] = {0};
+	int heatmap[WIDTH*HEIGHT] = {0};
+#endif
+
+	for (y = FROMY; TOY - y > DBL_EPSILON; y += STEPY) {
+		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX) {
+			c = x+y*I;
+			if (belongs_to_mandelbrot_set(c, &iter)) {
+				z = x+y*I;
+
+				for (iter = 0; iter < MAX_ITERATIONS; ++iter) {
+					z = complex_add(complex_mult(z, z), c);
+					complex_to_coord(z, &bx, &by);
+
+					if (bx >= 0 && bx < WIDTH && by >= 0 && by < HEIGHT)
+						++heatmap[by*WIDTH+bx];
+
+					if (complex_unsqrt_magnitude(z) > 4)
+						break;
+				}
+			}
+		}
+	}
+
+	for (by = 0; by < HEIGHT; ++by) {
+		for (bx = 0; bx < WIDTH; ++bx) {
+			if (heatmap[by*WIDTH+bx] > 0) {
+				buffer[(by*WIDTH+bx)*3 + 0] = colors[(heatmap[by*WIDTH+bx]%NUMCOLORS)*3 + 0];
+				buffer[(by*WIDTH+bx)*3 + 1] = colors[(heatmap[by*WIDTH+bx]%NUMCOLORS)*3 + 1];
+				buffer[(by*WIDTH+bx)*3 + 2] = colors[(heatmap[by*WIDTH+bx]%NUMCOLORS)*3 + 2];
+			}
+		}
+	}
+
+	save_buffer_as_png("buddhabrot.png", buffer, WIDTH, HEIGHT);
+
+#if BUFFER_SIZE >= 900000
+	free(buffer);
+	free(heatmap);
+#endif
+}
+
+int
+main(int argc, char **argv)
+{
+	while (++argv, --argc > 0) {
+		if ((*argv)[0] == '-' && (*argv)[1] != '\0' && (*argv)[2] == '\0') {
+			switch ((*argv)[1]) {
+				case 'b': buddhabrot(); break;
+				case 'h': usage(); break;
+				case 'm': mandelbrot(); break;
+				case 'v': version(); break;
+				default: die("invalid option %s", *argv); break;
+			}
+		} else {
+			die("unexpected argument: %s", *argv);
+		}
+	}
 
 	return 0;
 }
