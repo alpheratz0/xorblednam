@@ -71,50 +71,50 @@ version(void)
 	exit(0);
 }
 
-static double complex
-complex_mult(double complex a, double complex b)
+static long double complex
+complex_mult(long double complex a, long double complex b)
 {
-	double ar, ai, br, bi;
+	long double ar, ai, br, bi;
 
-	ar = creal(a); br = creal(b);
-	ai = cimag(a); bi = cimag(b);
+	ar = creall(a); br = creall(b);
+	ai = cimagl(a); bi = cimagl(b);
 
 	return ar * br - ai * bi + (ar * bi + br * ai) * I;
 }
 
-static double complex
-complex_add(double complex a, double complex b)
+static long double complex
+complex_add(long double complex a, long double complex b)
 {
-	double ar, ai, br, bi;
+	long double ar, ai, br, bi;
 
-	ar = creal(a); br = creal(b);
-	ai = cimag(a); bi = cimag(b);
+	ar = creall(a); br = creall(b);
+	ai = cimagl(a); bi = cimagl(b);
 
 	return ar + br + (ai + bi) * I;
 }
 
-static double
-complex_unsqrt_magnitude(double complex c)
+static long double
+complex_unsqrt_magnitude(long double complex c)
 {
-	double r, i;
+	long double r, i;
 
-	r = creal(c);
-	i = cimag(c);
+	r = creall(c);
+	i = cimagl(c);
 
 	return r * r + i * i;
 }
 
 static void
-complex_to_coord(double complex c, int *x, int *y)
+complex_to_coord(long double complex c, int *x, int *y)
 {
-	*x = (WIDTH * ((creal(c) - FROMX))) / (TOX - FROMX);
-	*y = (HEIGHT * ((cimag(c) - FROMY))) / (TOY - FROMY);
+	*x = (WIDTH * ((creall(c) - FROMX))) / (TOX - FROMX);
+	*y = (HEIGHT * ((cimagl(c) - FROMY))) / (TOY - FROMY);
 }
 
 static bool
-belongs_to_mandelbrot_set(double complex c, int *iter)
+belongs_to_mandelbrot_set(long double complex c, int *iter)
 {
-	double complex z;
+	long double complex z;
 
 	z = c;
 
@@ -180,7 +180,7 @@ static void
 mandelbrot(void)
 {
 	int iter;
-	double x, y;
+	long double x, y;
 
 #if BUFFER_SIZE >= 900000
 	uint8_t *buffer, *p;
@@ -214,8 +214,8 @@ mandelbrot(void)
 static void
 buddhabrot(void)
 {
-	double x, y;
-	double complex c, z;
+	long double x, y;
+	long double complex c, z;
 	int iter, bx, by;
 
 #if BUFFER_SIZE >= 900000
