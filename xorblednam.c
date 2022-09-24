@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <stdarg.h>
 #include <png.h>
 #include <errno.h>
@@ -111,22 +110,6 @@ complex_to_coord(long double complex c, int *x, int *y)
 	*y = (HEIGHT * ((cimagl(c) - FROMY))) / (TOY - FROMY);
 }
 
-static bool
-belongs_to_mandelbrot_set(long double complex c, int *iter)
-{
-	long double complex z;
-
-	z = c;
-
-	for (*iter = 0; *iter < MAX_ITERATIONS; ++*iter) {
-		z = complex_add(complex_mult(z, z), c);
-		if (complex_unsqrt_magnitude(z) > 4)
-			return true;
-	}
-
-	return false;
-}
-
 static void
 save_buffer_as_png(const char *path, uint8_t *buffer, int width, int height)
 {
@@ -181,6 +164,7 @@ mandelbrot(void)
 {
 	int iter;
 	long double x, y;
+	long double complex c, z;
 
 #if BUFFER_SIZE >= 900000
 	uint8_t *buffer, *p;
@@ -196,10 +180,17 @@ mandelbrot(void)
 		printf("begin row %d\n", (p - &buffer[0]) / (WIDTH * 3));
 #endif
 		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX, p += 3) {
-			if (belongs_to_mandelbrot_set(x+y*I, &iter)) {
-				p[0] = colors[(iter % NUMCOLORS) * 3];
-				p[1] = colors[(iter % NUMCOLORS) * 3 + 1];
-				p[2] = colors[(iter % NUMCOLORS) * 3 + 2];
+			c = x+y*I;
+			z = c;
+
+			for (iter = 0; iter < MAX_ITERATIONS; ++iter) {
+				z = complex_add(complex_mult(z, z), c);
+				if (complex_unsqrt_magnitude(z) > 4) {
+					p[0] = colors[(iter % NUMCOLORS) * 3];
+					p[1] = colors[(iter % NUMCOLORS) * 3 + 1];
+					p[2] = colors[(iter % NUMCOLORS) * 3 + 2];
+					break;
+				}
 			}
 		}
 	}
@@ -217,6 +208,7 @@ buddhabrot(void)
 	long double x, y;
 	long double complex c, z;
 	int iter, bx, by;
+	long double complex orbit[MAX_ITERATIONS];
 
 #if BUFFER_SIZE >= 900000
 	uint8_t *buffer;
@@ -232,18 +224,18 @@ buddhabrot(void)
 	for (y = FROMY; TOY - y > DBL_EPSILON; y += STEPY) {
 		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX) {
 			c = x+y*I;
-			if (belongs_to_mandelbrot_set(c, &iter)) {
-				z = x+y*I;
+			z = c;
 
-				for (iter = 0; iter < MAX_ITERATIONS; ++iter) {
-					z = complex_add(complex_mult(z, z), c);
-					complex_to_coord(z, &bx, &by);
-
-					if (bx >= 0 && bx < WIDTH && by >= 0 && by < HEIGHT)
-						++heatmap[by*WIDTH+bx];
-
-					if (complex_unsqrt_magnitude(z) > 4)
-						break;
+			for (iter = 0; iter < MAX_ITERATIONS;) {
+				z = complex_add(complex_mult(z, z), c);
+				orbit[iter++] = z;
+				if (complex_unsqrt_magnitude(z) > 4) {
+					while (iter-- > 0) {
+						complex_to_coord(orbit[iter], &bx, &by);
+						if (bx >= 0 && bx < WIDTH && by >= 0 && by < HEIGHT)
+							++heatmap[by*WIDTH+bx];
+					}
+					break;
 				}
 			}
 		}
