@@ -59,7 +59,7 @@ die(const char *fmt, ...)
 static void
 usage(void)
 {
-	puts("usage: xorblednam [-bhmv]");
+	puts("usage: xorblednam [-bhjmv]");
 	exit(0);
 }
 
@@ -263,6 +263,51 @@ buddhabrot(void)
 	exit(0);
 }
 
+static void
+julia(void)
+{
+	int iter;
+	long double x, y;
+	long double complex c, z;
+
+#if BUFFER_SIZE >= 900000
+	uint8_t *buffer, *p;
+	buffer = calloc(BUFFER_SIZE, 1);
+#else
+	uint8_t buffer[BUFFER_SIZE] = {0}, *p;
+#endif
+
+	p = &buffer[0];
+
+	for (y = FROMY; TOY - y > DBL_EPSILON; y += STEPY) {
+#ifdef DEBUG
+		printf("begin row %d\n", (p - &buffer[0]) / (WIDTH * 3));
+#endif
+		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX, p += 3) {
+			c = -0.7269+0.1889*I;
+			z = x+y*I;
+
+			for (iter = 0; iter < MAX_ITERATIONS; ++iter) {
+				z = complex_add(complex_mult(z, z), c);
+				if (complex_unsqrt_magnitude(z) > 4) {
+					p[0] = colors[(iter % NUMCOLORS) * 3];
+					p[1] = colors[(iter % NUMCOLORS) * 3 + 1];
+					p[2] = colors[(iter % NUMCOLORS) * 3 + 2];
+					break;
+				}
+			}
+		}
+	}
+
+	save_buffer_as_png("julia.png", buffer, WIDTH, HEIGHT);
+
+#if BUFFER_SIZE >= 900000
+	free(buffer);
+#endif
+
+	exit(0);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -271,6 +316,7 @@ main(int argc, char **argv)
 			switch ((*argv)[1]) {
 				case 'b': buddhabrot(); break;
 				case 'h': usage(); break;
+				case 'j': julia(); break;
 				case 'm': mandelbrot(); break;
 				case 'v': version(); break;
 				default: die("invalid option %s", *argv); break;
