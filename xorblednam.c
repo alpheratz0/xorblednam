@@ -200,6 +200,8 @@ mandelbrot(void)
 #if BUFFER_SIZE >= 900000
 	free(buffer);
 #endif
+
+	exit(0);
 }
 
 static void
@@ -257,6 +259,8 @@ buddhabrot(void)
 	free(buffer);
 	free(heatmap);
 #endif
+
+	exit(0);
 }
 
 int
@@ -275,6 +279,8 @@ main(int argc, char **argv)
 			die("unexpected argument: %s", *argv);
 		}
 	}
+
+	usage();
 
 	return 0;
 }
