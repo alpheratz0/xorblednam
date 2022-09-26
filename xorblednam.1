@@ -1,27 +1,30 @@
-.Dd September 24, 2022
+.Dd September 26, 2022
 .Dt XORBLEDNAM 1
 .Sh NAME
 .Nm xorblednam
 .Nd fractal generator
 .Sh SYNOPSIS
 .Nm
-.Op Fl bhjmv
+.Op Fl hv
+.Op Fl buddhabrot
+.Op Fl julia
+.Op Fl mandelbrot
 .Sh DESCRIPTION
 The
 .Nm
 utility lets you generate some fractals.
 .Sh OPTIONS
 .Bl -tag -width indent
-.It Fl b
-generate a buddhabrot fractal
 .It Fl h
 show usage
-.It Fl j
-generate a julia fractal
-.It Fl m
-generate a mandelbrot fractal
 .It Fl v
 display the program version
+.It Fl buddhabrot
+generate a buddhabrot fractal
+.It Fl julia
+generate a julia fractal
+.It Fl mandelbrot
+generate a mandelbrot fractal
 .El
 .Sh SEE ALSO
 .Xr png 5

@@ -200,8 +200,6 @@ mandelbrot(void)
 #if BUFFER_SIZE >= 900000
 	free(buffer);
 #endif
-
-	exit(0);
 }
 
 static void
@@ -259,8 +257,6 @@ buddhabrot(void)
 	free(buffer);
 	free(heatmap);
 #endif
-
-	exit(0);
 }
 
 static void
@@ -304,29 +300,17 @@ julia(void)
 #if BUFFER_SIZE >= 900000
 	free(buffer);
 #endif
-
-	exit(0);
 }
 
 int
 main(int argc, char **argv)
 {
-	while (++argv, --argc > 0) {
-		if ((*argv)[0] == '-' && (*argv)[1] != '\0' && (*argv)[2] == '\0') {
-			switch ((*argv)[1]) {
-				case 'b': buddhabrot(); break;
-				case 'h': usage(); break;
-				case 'j': julia(); break;
-				case 'm': mandelbrot(); break;
-				case 'v': version(); break;
-				default: die("invalid option %s", *argv); break;
-			}
-		} else {
-			die("unexpected argument: %s", *argv);
-		}
-	}
-
-	usage();
+	if (++argv, --argc, argc != 1 || !strcmp(*argv, "-h")) usage();
+	else if (!strcmp(*argv, "-v")) version();
+	else if (!strcmp(*argv, "-buddhabrot")) buddhabrot();
+	else if (!strcmp(*argv, "-julia")) julia();
+	else if (!strcmp(*argv, "-mandelbrot")) mandelbrot();
+	else usage();
 
 	return 0;
 }
