@@ -110,7 +110,7 @@ complex_add(long double complex a, long double complex b)
 }
 
 static long double
-complex_unsqrt_magnitude(long double complex c)
+complex_magnitude_squared(long double complex c)
 {
 	long double r, i;
 
@@ -202,7 +202,7 @@ mandelbrot(void)
 
 			for (iter = 0; iter < MAX_ITERATIONS; ++iter) {
 				z = complex_add(complex_mult(z, z), c);
-				if (complex_unsqrt_magnitude(z) > 4) {
+				if (complex_magnitude_squared(z) > 4) {
 					p[0] = colors[(iter % NUMCOLORS) * 3];
 					p[1] = colors[(iter % NUMCOLORS) * 3 + 1];
 					p[2] = colors[(iter % NUMCOLORS) * 3 + 2];
@@ -246,7 +246,7 @@ buddhabrot(void)
 			for (iter = 0; iter < MAX_ITERATIONS;) {
 				z = complex_add(complex_mult(z, z), c);
 				orbit[iter++] = z;
-				if (complex_unsqrt_magnitude(z) > 4) {
+				if (complex_magnitude_squared(z) > 4) {
 					while (iter-- > 0) {
 						complex_to_coord(orbit[iter], &bx, &by);
 						if (bx >= 0 && bx < WIDTH && by >= 0 && by < HEIGHT)
@@ -302,7 +302,7 @@ julia(void)
 
 			for (iter = 0; iter < MAX_ITERATIONS; ++iter) {
 				z = complex_add(complex_mult(z, z), c);
-				if (complex_unsqrt_magnitude(z) > 4) {
+				if (complex_magnitude_squared(z) > 4) {
 					p[0] = colors[(iter % NUMCOLORS) * 3];
 					p[1] = colors[(iter % NUMCOLORS) * 3 + 1];
 					p[2] = colors[(iter % NUMCOLORS) * 3 + 2];
