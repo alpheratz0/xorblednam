@@ -38,8 +38,8 @@
 #define CENTERY        (0.0)
 ///////////////////////////////////
 
-#define ZOOM_OUTX      (ZOOM_OUT)
-#define ZOOM_OUTY      ((ZOOM_OUT*HEIGHT)/WIDTH)
+#define ZOOM_OUTX      ((WIDTH>HEIGHT)?(ZOOM_OUT):((ZOOM_OUT*WIDTH)/HEIGHT))
+#define ZOOM_OUTY      ((WIDTH>HEIGHT)?((ZOOM_OUT*HEIGHT)/WIDTH):(ZOOM_OUT))
 #define BUFFER_SIZE    (WIDTH*HEIGHT*3)
 #define FROMX          (CENTERX-ZOOM_OUTX/2)
 #define TOX            (CENTERX+ZOOM_OUTX/2)
