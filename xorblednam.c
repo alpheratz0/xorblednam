@@ -29,14 +29,20 @@
 #define DEBUG
 #endif
 
+///////////////////////////////////CONFIGURATION
 #define MAX_ITERATIONS (1000)
 #define WIDTH          (8192)
 #define HEIGHT         (8192)
+#define ZOOM_OUT       (3.0)
+#define CENTERX        (-0.5)
+#define CENTERY        (0.0)
+///////////////////////////////////
+
 #define BUFFER_SIZE    (WIDTH*HEIGHT*3)
-#define FROMX          (-2.0)
-#define TOX            (1.0)
-#define FROMY          (-1.5)
-#define TOY            (1.5)
+#define FROMX          (CENTERX-ZOOM_OUT/2)
+#define TOX            (CENTERX+ZOOM_OUT/2)
+#define FROMY          (CENTERY-ZOOM_OUT/2)
+#define TOY            (CENTERY+ZOOM_OUT/2)
 #define STEPX          ((TOX - FROMX) / WIDTH)
 #define STEPY          ((TOY - FROMY) / HEIGHT)
 #define NUMCOLORS      (sizeof(colors) / 3)
