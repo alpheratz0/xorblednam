@@ -38,11 +38,13 @@
 #define CENTERY        (0.0)
 ///////////////////////////////////
 
+#define ZOOM_OUTX      (ZOOM_OUT)
+#define ZOOM_OUTY      ((ZOOM_OUT*HEIGHT)/WIDTH)
 #define BUFFER_SIZE    (WIDTH*HEIGHT*3)
-#define FROMX          (CENTERX-ZOOM_OUT/2)
-#define TOX            (CENTERX+ZOOM_OUT/2)
-#define FROMY          (-CENTERY-ZOOM_OUT/2)
-#define TOY            (-CENTERY+ZOOM_OUT/2)
+#define FROMX          (CENTERX-ZOOM_OUTX/2)
+#define TOX            (CENTERX+ZOOM_OUTX/2)
+#define FROMY          (-CENTERY-ZOOM_OUTY/2)
+#define TOY            (-CENTERY+ZOOM_OUTY/2)
 #define STEPX          ((TOX - FROMX) / WIDTH)
 #define STEPY          ((TOY - FROMY) / HEIGHT)
 #define NUMCOLORS      (sizeof(colors) / 3)
