@@ -95,28 +95,6 @@ version(void)
 	exit(0);
 }
 
-static long double complex
-complex_mult(long double complex a, long double complex b)
-{
-	long double ar, ai, br, bi;
-
-	ar = creall(a); br = creall(b);
-	ai = cimagl(a); bi = cimagl(b);
-
-	return ar * br - ai * bi + (ar * bi + br * ai) * I;
-}
-
-static long double complex
-complex_add(long double complex a, long double complex b)
-{
-	long double ar, ai, br, bi;
-
-	ar = creall(a); br = creall(b);
-	ai = cimagl(a); bi = cimagl(b);
-
-	return ar + br + (ai + bi) * I;
-}
-
 static long double
 complex_magnitude_squared(long double complex c)
 {
@@ -205,11 +183,11 @@ mandelbrot(void)
 		printf("begin row %d\n", (p - &buffer[0]) / (WIDTH * 3));
 #endif
 		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX, p += 3) {
-			c = x+y*I;
+			c = x + y * I;
 			z = c;
 
 			for (iter = 0; iter < MAX_ITERATIONS; ++iter) {
-				z = complex_add(complex_mult(z, z), c);
+				z = z * z + c;
 				if (complex_magnitude_squared(z) > 4) {
 					p[0] = colors[(iter % NUMCOLORS) * 3];
 					p[1] = colors[(iter % NUMCOLORS) * 3 + 1];
@@ -248,11 +226,11 @@ buddhabrot(void)
 
 	for (y = FROMY; TOY - y > DBL_EPSILON; y += STEPY) {
 		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX) {
-			c = x+y*I;
+			c = x + y * I;
 			z = c;
 
 			for (iter = 0; iter < MAX_ITERATIONS;) {
-				z = complex_add(complex_mult(z, z), c);
+				z = z * z + c;
 				orbit[iter++] = z;
 				if (complex_magnitude_squared(z) > 4) {
 					while (iter-- > 0) {
@@ -305,11 +283,11 @@ julia(void)
 		printf("begin row %d\n", (p - &buffer[0]) / (WIDTH * 3));
 #endif
 		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX, p += 3) {
-			c = -0.7269+0.1889*I;
-			z = x+y*I;
+			c = -0.7269 + 0.1889 * I;
+			z = x + y * I;
 
 			for (iter = 0; iter < MAX_ITERATIONS; ++iter) {
-				z = complex_add(complex_mult(z, z), c);
+				z = z * z + c;
 				if (complex_magnitude_squared(z) > 4) {
 					p[0] = colors[(iter % NUMCOLORS) * 3];
 					p[1] = colors[(iter % NUMCOLORS) * 3 + 1];
