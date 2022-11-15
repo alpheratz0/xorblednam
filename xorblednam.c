@@ -24,6 +24,7 @@
 #include <string.h>
 #include <complex.h>
 #include <float.h>
+#include <math.h>
 
 ///////////////////////////////////CONFIGURATION
 #define MAX_ITERATIONS (1000)
@@ -79,7 +80,7 @@ die(const char *fmt, ...)
 static void
 usage(void)
 {
-	puts("usage: xorblednam [-hv] [-buddhabrot] [-julia] [-mandelbrot]");
+	puts("usage: xorblednam [-hv] [-buddhabrot] [-julia] [-mandelbrot] [-burning_ship]");
 	exit(0);
 }
 
@@ -270,6 +271,38 @@ julia(void)
 	free(buffer);
 }
 
+static void
+burning_ship(void)
+{
+	int iter;
+	long double x, y;
+	long double complex c, z;
+	uint8_t *buffer, *p;
+
+	p = buffer = calloc(WIDTH*HEIGHT*3, 1);
+
+	for (y = FROMY; TOY - y > DBL_EPSILON; y += STEPY) {
+		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX, p += 3) {
+			c = x + y * I;
+			z = c;
+
+			for (iter = 0; iter < MAX_ITERATIONS; ++iter) {
+				z = cpow(fabsl(creall(z)) + fabsl(cimagl(z)) * I, 2) + c;
+				if (complex_magnitude_squared(z) > 4) {
+					p[0] = colors[(iter % NUMCOLORS) * 3];
+					p[1] = colors[(iter % NUMCOLORS) * 3 + 1];
+					p[2] = colors[(iter % NUMCOLORS) * 3 + 2];
+					break;
+				}
+			}
+		}
+	}
+
+	save_buffer_as_png("burning_ship.png", buffer, WIDTH, HEIGHT);
+
+	free(buffer);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -278,6 +311,7 @@ main(int argc, char **argv)
 	else if (!strcmp(*argv, "-buddhabrot")) buddhabrot();
 	else if (!strcmp(*argv, "-julia")) julia();
 	else if (!strcmp(*argv, "-mandelbrot")) mandelbrot();
+	else if (!strcmp(*argv, "-burning_ship")) burning_ship();
 	else usage();
 
 	return 0;
