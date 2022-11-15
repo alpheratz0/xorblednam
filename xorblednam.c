@@ -25,10 +25,6 @@
 #include <complex.h>
 #include <float.h>
 
-#if 0
-#define DEBUG
-#endif
-
 ///////////////////////////////////CONFIGURATION
 #define MAX_ITERATIONS (1000)
 #define WIDTH          (8192)
@@ -40,7 +36,6 @@
 
 #define ZOOM_OUTX      ((WIDTH>HEIGHT)?(ZOOM_OUT):((ZOOM_OUT*WIDTH)/HEIGHT))
 #define ZOOM_OUTY      ((WIDTH>HEIGHT)?((ZOOM_OUT*HEIGHT)/WIDTH):(ZOOM_OUT))
-#define BUFFER_SIZE    (WIDTH*HEIGHT*3)
 #define FROMX          (CENTERX-ZOOM_OUTX/2)
 #define TOX            (CENTERX+ZOOM_OUTX/2)
 #define FROMY          (-CENTERY-ZOOM_OUTY/2)
@@ -168,20 +163,11 @@ mandelbrot(void)
 	int iter;
 	long double x, y;
 	long double complex c, z;
-
-#if BUFFER_SIZE >= 900000
 	uint8_t *buffer, *p;
-	buffer = calloc(BUFFER_SIZE, 1);
-#else
-	uint8_t buffer[BUFFER_SIZE] = {0}, *p;
-#endif
 
-	p = &buffer[0];
+	p = buffer = calloc(WIDTH*HEIGHT*3, 1);
 
 	for (y = FROMY; TOY - y > DBL_EPSILON; y += STEPY) {
-#ifdef DEBUG
-		printf("begin row %d\n", (p - &buffer[0]) / (WIDTH * 3));
-#endif
 		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX, p += 3) {
 			c = x + y * I;
 			z = c;
@@ -200,9 +186,7 @@ mandelbrot(void)
 
 	save_buffer_as_png("mandelbrot.png", buffer, WIDTH, HEIGHT);
 
-#if BUFFER_SIZE >= 900000
 	free(buffer);
-#endif
 }
 
 static void
@@ -212,17 +196,11 @@ buddhabrot(void)
 	long double complex c, z;
 	int iter, bx, by;
 	long double complex orbit[MAX_ITERATIONS];
-
-#if BUFFER_SIZE >= 900000
 	uint8_t *buffer;
 	int *heatmap;
 
-	buffer = calloc(BUFFER_SIZE, 1);
+	buffer = calloc(WIDTH*HEIGHT*3, 1);
 	heatmap = calloc(WIDTH*HEIGHT, sizeof(int));
-#else
-	uint8_t buffer[BUFFER_SIZE] = {0};
-	int heatmap[WIDTH*HEIGHT] = {0};
-#endif
 
 	for (y = FROMY; TOY - y > DBL_EPSILON; y += STEPY) {
 		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX) {
@@ -256,10 +234,8 @@ buddhabrot(void)
 
 	save_buffer_as_png("buddhabrot.png", buffer, WIDTH, HEIGHT);
 
-#if BUFFER_SIZE >= 900000
 	free(buffer);
 	free(heatmap);
-#endif
 }
 
 static void
@@ -268,20 +244,11 @@ julia(void)
 	int iter;
 	long double x, y;
 	long double complex c, z;
-
-#if BUFFER_SIZE >= 900000
 	uint8_t *buffer, *p;
-	buffer = calloc(BUFFER_SIZE, 1);
-#else
-	uint8_t buffer[BUFFER_SIZE] = {0}, *p;
-#endif
 
-	p = &buffer[0];
+	p = buffer = calloc(WIDTH*HEIGHT*3, 1);
 
 	for (y = FROMY; TOY - y > DBL_EPSILON; y += STEPY) {
-#ifdef DEBUG
-		printf("begin row %d\n", (p - &buffer[0]) / (WIDTH * 3));
-#endif
 		for (x = FROMX; TOX - x > DBL_EPSILON; x += STEPX, p += 3) {
 			c = -0.7269 + 0.1889 * I;
 			z = x + y * I;
@@ -300,9 +267,7 @@ julia(void)
 
 	save_buffer_as_png("julia.png", buffer, WIDTH, HEIGHT);
 
-#if BUFFER_SIZE >= 900000
 	free(buffer);
-#endif
 }
 
 int
