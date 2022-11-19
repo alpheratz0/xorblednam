@@ -117,7 +117,7 @@ save_buffer_as_png(const char *path, uint8_t *buffer, int width, int height)
 	png_struct *png;
 	png_info *pnginfo;
 	png_byte *row;
-	
+
 	if (NULL == (fp = fopen(path, "wb")))
 		die("fopen failed: %s", strerror(errno));
 
