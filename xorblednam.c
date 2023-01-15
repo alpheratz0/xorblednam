@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2022 <alpheratz99@protonmail.com>
+	Copyright (C) 2022-2023 <alpheratz99@protonmail.com>
 
 	This program is free software; you can redistribute it and/or modify it under
 	the terms of the GNU General Public License version 2 as published by the
@@ -153,6 +153,7 @@ save_buffer_as_png(const char *path, uint8_t *buffer, int width, int height)
 
 	png_write_end(png, NULL);
 	png_free_data(png, pnginfo, PNG_FREE_ALL, -1);
+	png_destroy_info_struct(png, &pnginfo);
 	png_destroy_write_struct(&png, NULL);
 	fclose(fp);
 	free(row);
