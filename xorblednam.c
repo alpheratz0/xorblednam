@@ -307,12 +307,12 @@ burning_ship(void)
 int
 main(int argc, char **argv)
 {
-	if (++argv, --argc, argc != 1 || !strcmp(*argv, "-h")) usage();
-	else if (!strcmp(*argv, "-v")) version();
-	else if (!strcmp(*argv, "-buddhabrot")) buddhabrot();
-	else if (!strcmp(*argv, "-julia")) julia();
-	else if (!strcmp(*argv, "-mandelbrot")) mandelbrot();
-	else if (!strcmp(*argv, "-burning_ship")) burning_ship();
+	if (argc != 2 || !strcmp(argv[1], "-h")) usage();
+	else if (!strcmp(argv[1], "-v")) version();
+	else if (!strcmp(argv[1], "-buddhabrot")) buddhabrot();
+	else if (!strcmp(argv[1], "-julia")) julia();
+	else if (!strcmp(argv[1], "-mandelbrot")) mandelbrot();
+	else if (!strcmp(argv[1], "-burning_ship")) burning_ship();
 	else usage();
 
 	return 0;
