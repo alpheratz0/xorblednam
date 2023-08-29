@@ -81,7 +81,8 @@ die(const char *fmt, ...)
 static void
 usage(void)
 {
-	puts("usage: xorblednam [-hv] [-buddhabrot] [-julia] [-mandelbrot] [-burning_ship]");
+	puts("usage: xorblednam [-hv] [-buddhabrot] [-julia]");
+	puts("                  [-mandelbrot] [-burning_ship]");
 	exit(0);
 }
 
