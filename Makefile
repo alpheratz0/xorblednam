@@ -21,7 +21,8 @@ install: all
 
 dist: clean
 	mkdir -p xorblednam-$(VERSION)
-	cp -R COPYING config.mk Makefile README xorblednam.1 xorblednam.c xorblednam-$(VERSION)
+	cp -R COPYING config.mk Makefile README xorblednam.1 \
+		xorblednam.c xorblednam-$(VERSION)
 	tar -cf xorblednam-$(VERSION).tar xorblednam-$(VERSION)
 	gzip xorblednam-$(VERSION).tar
 	rm -rf xorblednam-$(VERSION)
