@@ -6,7 +6,7 @@ include config.mk
 all: xorblednam
 
 xorblednam: xorblednam.o
-	$(CC) $(LDFLAGS) -o xorblednam xorblednam.o $(LDLIBS)
+	$(CC) $(LDFLAGS) -o xorblednam xorblednam.o
 
 clean:
 	rm -f xorblednam xorblednam.o xorblednam-$(VERSION).tar.gz
